@@ -1,1 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noah Diamond Inc — Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --ink:      #1a1208;
+    --ink-mid:  #3b2f1e;
+    --ink-lite: #6b5a45;
+    --cream:    #f5f0e8;
+    --parchment:#ede5d0;
+    --rule:     #8b7355;
+    --accent:   #2c1810;
+  }
+
+  body {
+    background: #d6cfc4;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ══════════════════════════════════════════
+     FORM PANEL
+  ══════════════════════════════════════════ */
+  #form-panel {
+    width: 100%;
+    max-width: 840px;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: 28px 32px 32px;
+    margin-bottom: 32px;
+    box-shadow: 4px 4px 0 #b0a898, 8px 8px 0 #a09888;
+  }
+
+  #form-panel h2 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.3rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .form-section-label {
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--rule);
+    border-bottom: 1px solid var(--parchment);
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+    margin-top: 22px;
+  }
+  .form-section-label:first-of-type { margin-top: 0; }
+
+  .form-grid { display: grid; gap: 14px 20px; margin-bottom: 6px; }
+  .fg-2 { grid-template-columns: 1fr 1fr; }
+  .fg-4 { grid-template-columns: 2fr 2fr 1fr 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+
+  label {
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-lite);
+  }
+
+  input, select {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.88rem;
+    color: var(--ink);
+    background: #fdfaf4;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 6px 4px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-bottom-color: var(--accent); }
+  select { cursor: pointer; }
+
+  .date-row { display: flex; gap: 10px; align-items: flex-end; }
+  .date-row select { width: 110px; flex-shrink: 0; }
+  .date-row input { flex: 1; }
+
+  /* ── LINE ITEMS TABLE ── */
+  .items-hint {
+    font-size: 0.66rem;
+    color: var(--ink-lite);
+    font-style: italic;
+    margin-bottom: 10px;
+    margin-top: 14px;
+  }
+
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.78rem;
+  }
+  .items-table th {
+    font-size: 0.59rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-lite);
+    font-weight: 700;
+    border-bottom: 1px solid var(--rule);
+    padding: 4px 4px 6px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .items-table th.desc-h { text-align: left; }
+  .items-table td { padding: 2px 2px; }
+  .items-table td input {
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 4px 3px;
+  }
+  .items-table td.desc-col input { text-align: left; }
+  .items-table td.total-col input {
+    text-align: right;
+    background: #ede8de !important;
+    color: var(--ink-mid);
+    font-style: italic;
+    cursor: text;
+  }
+  .items-table td.total-col input.manual-override {
+    background: #fdfaf4 !important;
+    color: var(--ink);
+    font-style: normal;
+    border-bottom: 1px solid var(--accent);
+  }
+  .items-table tr:nth-child(even) td input { background: var(--parchment); }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  button {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid;
+    padding: 9px 20px;
+    transition: all 0.15s;
+  }
+  .btn-generate { background: var(--accent); color: var(--cream); border-color: var(--accent); }
+  .btn-generate:hover { background: #1a0e08; }
+  .btn-clear { background: transparent; color: var(--ink-mid); border-color: var(--rule); }
+  .btn-clear:hover { background: var(--parchment); }
+  .btn-print { background: transparent; color: var(--ink-mid); border-color: var(--rule); }
+  .btn-print:hover { background: var(--parchment); }
+
+  /* ══════════════════════════════════════════
+     INVOICE
+  ══════════════════════════════════════════ */
+  #invoice {
+    width: 100%;
+    max-width: 840px;
+    background: #fdfaf4;
+    box-shadow: 4px 4px 0 #b0a898, 8px 8px 0 #a09888;
+    position: relative;
+  }
+
+  /* Top zone: stacked left column
+     Return address sits top-left (small),
+     customer address sits below it — lands in
+     the #10 envelope window (left side, ~2" from top). */
+  .inv-top-zone {
+    padding: 24px 52px 20px 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 220px;
+  }
+
+  .inv-return { margin-bottom: 28px; }
+  .inv-return-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    margin-bottom: 1px;
+  }
+  .inv-return-detail {
+    font-size: 0.62rem;
+    color: var(--ink-lite);
+    font-style: italic;
+    line-height: 1.65;
+  }
+
+  /* Customer address — left-aligned, shows through left window */
+  .inv-address-window {
+    width: 280px;
+    padding-left: 4px;
+  }
+  .inv-address-label {
+    font-size: 0.54rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-lite);
+    margin-bottom: 4px;
+  }
+  .inv-address-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .inv-address-lines {
+    font-size: 0.76rem;
+    color: var(--ink-mid);
+    line-height: 1.75;
+    margin-top: 3px;
+  }
+
+  .fold-guide {
+    width: 100%;
+    border-top: 1px dashed #c0b5a5;
+    position: relative;
+    margin: 0;
+  }
+  .fold-guide::after {
+    content: '✂  fold here';
+    font-size: 0.58rem;
+    color: #c0b5a5;
+    position: absolute;
+    right: 10px;
+    top: 3px;
+    letter-spacing: 0.1em;
+    font-family: Georgia, serif;
+  }
+
+  .inv-body {
+    padding: 0 52px 48px 52px;
+    position: relative;
+  }
+  .inv-body::before {
+    content: '';
+    position: absolute;
+    inset: 8px 14px 14px 14px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+  .inv-body::after {
+    content: '';
+    position: absolute;
+    inset: 12px 18px 18px 18px;
+    border: 0.5px solid #c4b49a;
+    pointer-events: none;
+  }
+
+  .ornament {
+    text-align: center;
+    color: var(--rule);
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    padding: 20px 0 14px;
+    line-height: 1;
+  }
+
+  .inv-header { text-align: center; margin-bottom: 6px; }
+  .inv-business-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.9rem;
+    font-weight: normal;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+  }
+  .inv-sub {
+    font-size: 0.7rem;
+    color: var(--ink-lite);
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+    font-style: italic;
+  }
+
+  .inv-divider      { border: none; border-top: 2px solid var(--ink); margin: 12px 0 3px; }
+  .inv-divider-thin { border: none; border-top: 0.5px solid var(--rule); margin: 3px 0 14px; }
+
+  .inv-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .inv-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.45rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    font-style: italic;
+  }
+  .inv-date-right {
+    font-size: 0.76rem;
+    color: var(--ink-mid);
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+  .inv-date-right span { font-weight: 700; color: var(--ink); font-style: normal; }
+
+  .inv-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .inv-table thead tr { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .inv-table th {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-mid);
+    font-weight: 700;
+    padding: 6px 5px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .inv-table th.desc { text-align: left; }
+  .inv-table td { padding: 6px 5px; text-align: center; color: var(--ink); vertical-align: middle; font-variant-numeric: tabular-nums; }
+  .inv-table td.desc { text-align: left; }
+  .inv-table td.price { text-align: right; }
+  .inv-table td.memo-cell { font-weight: 700; font-size: 0.73rem; color: var(--accent); }
+
+  .inv-table tbody tr { border-bottom: 0.5px solid #d4c9b5; }
+  .inv-table tbody tr:nth-child(even) { background: #f7f2e8; }
+  .inv-table tbody tr.memo-group-start td { border-top: 1.5px solid var(--rule); }
+
+  .inv-total-row { border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .inv-total-row td { padding: 9px 5px; font-weight: 700; font-size: 0.92rem; }
+
+  .inv-footer { margin-top: 24px; text-align: center; }
+  .inv-footer-rule { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .inv-footer-rule::before, .inv-footer-rule::after { content: ''; flex: 1; border-top: 1px solid var(--rule); }
+  .inv-footer-ornament { font-size: 0.67rem; letter-spacing: 0.28em; color: var(--rule); }
+  .inv-footer-text { font-size: 0.67rem; color: var(--ink-lite); font-style: italic; line-height: 1.8; }
+
+  /* ══════════════════════════════════════════
+     PRINT STYLES
+  ══════════════════════════════════════════ */
+  @page {
+    size: letter portrait;
+    margin: 0.4in 0.5in;
+  }
+
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+      display: block;
+    }
+    #form-panel {
+      display: none !important;
+    }
+    #invoice {
+      box-shadow: none;
+      max-width: 100%;
+      width: 100%;
+    }
+    .inv-top-zone {
+      padding: 0.2in 0.5in 0 0.5in;
+      min-height: 3.4in;
+      max-height: 3.4in;
+      overflow: hidden;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    /* Return address sits at very top left */
+    .inv-return { margin-bottom: 0.35in; }
+    /* Customer address block lines up with envelope window:
+       window is ~0.875" from left, ~2" from top of envelope.
+       With letter folded in thirds, this maps to roughly
+       0.2in top padding + 0.35in return block = ~0.55in from top of zone,
+       which when folded sits perfectly in the left window. */
+    .inv-address-window { padding-left: 0; width: 3in; }
+    .inv-body {
+      padding: 0 0.5in 0.5in 0.5in;
+    }
+    .fold-guide {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 660px) {
+    #form-panel { padding: 20px 16px; }
+    .fg-2 { grid-template-columns: 1fr; }
+    .fg-4 { grid-template-columns: 1fr 1fr; }
+    .inv-top-zone { padding: 20px 20px 0; }
+    .inv-address-window { width: 100%; }
+    .inv-body { padding: 0 24px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ENTRY FORM -->
+<div id="form-panel">
+  <h2>Invoice Entry — Noah Diamond Inc.</h2>
+
+  <div class="form-section-label">Invoice Details</div>
+  <div class="form-grid fg-2">
+    <div class="form-group">
+      <label>Date</label>
+      <div class="date-row">
+        <select id="date-mode" onchange="toggleDate()">
+          <option value="today">Today</option>
+          <option value="manual">Manual</option>
+        </select>
+        <input type="date" id="manual-date" style="display:none">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Customer Name</label>
+      <input type="text" id="cust-name" placeholder="Full name">
+    </div>
+  </div>
+
+  <div class="form-section-label">Customer Address (appears in envelope window)</div>
+  <div class="form-grid fg-2">
+    <div class="form-group">
+      <label>Address Line 1 (Street)</label>
+      <input type="text" id="cust-addr1" placeholder="123 Main Street">
+    </div>
+    <div class="form-group">
+      <label>Address Line 2 (Suite / Apt)</label>
+      <input type="text" id="cust-addr2" placeholder="Suite 200">
+    </div>
+  </div>
+  <div class="form-grid fg-4">
+    <div class="form-group">
+      <label>City</label>
+      <input type="text" id="cust-city" placeholder="New York">
+    </div>
+    <div class="form-group">
+      <label>State</label>
+      <input type="text" id="cust-state" placeholder="NY">
+    </div>
+    <div class="form-group">
+      <label>ZIP</label>
+      <input type="text" id="cust-zip" placeholder="10036">
+    </div>
+    <div class="form-group">
+      <label>Country</label>
+      <input type="text" id="cust-country" placeholder="USA">
+    </div>
+  </div>
+  <div class="form-grid fg-2" style="margin-top:14px">
+    <div class="form-group">
+      <label>Customer Phone / Email</label>
+      <input type="text" id="cust-contact" placeholder="Phone or email">
+    </div>
+  </div>
+
+  <div class="form-section-label">Line Items</div>
+  <div class="items-hint">Total Price auto-calculates as CTS × Price Per Carat. Click into the Total field to enter manually instead. Rows with the same Memo # are grouped together.</div>
+
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width:72px">Memo #</th>
+        <th style="width:44px">Qty</th>
+        <th style="width:72px">CTS</th>
+        <th class="desc-h">Description</th>
+        <th style="width:96px">Price / Carat</th>
+        <th style="width:104px">Total Price</th>
+      </tr>
+    </thead>
+    <tbody id="line-items"></tbody>
+  </table>
+
+  <div class="btn-row">
+    <button class="btn-generate" onclick="generateInvoice()">Generate Invoice</button>
+    <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+    <button class="btn-print" onclick="printInvoice()">🖨 Print &amp; Save as PDF</button>
+  </div>
+  <div style="margin-top:12px; font-size:0.67rem; color:#6b5a45; font-style:italic; line-height:1.8;">
+    <strong style="font-style:normal;">To save as PDF:</strong> Click Print above → set <em>Destination</em> to <em>"Save as PDF"</em> → Save.<br>
+    <strong style="font-style:normal;">To hide the URL &amp; date when printing:</strong> In the print dialog → More settings → uncheck <em>"Headers and footers"</em>.
+  </div>
+</div>
+
+<!-- INVOICE -->
+<div id="invoice">
+
+  <div class="inv-top-zone">
+    <div class="inv-return">
+      <div class="inv-return-name">Noah Diamond Inc.</div>
+      <div class="inv-return-detail">
+        50 West 47th Street, Suite 1101<br>
+        New York, NY 10036<br>
+        718-614-1013
+      </div>
+    </div>
+    <div class="inv-address-window">
+      <div class="inv-address-label">To</div>
+      <div class="inv-address-name" id="inv-cust-name">—</div>
+      <div class="inv-address-lines" id="inv-cust-address"></div>
+    </div>
+  </div>
+
+  <div class="fold-guide"></div>
+
+  <div class="inv-body">
+    <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <div class="inv-header">
+      <div class="inv-business-name">Noah Diamond Inc.</div>
+      <div class="inv-sub">50 West 47th Street, Suite 1101 &nbsp;·&nbsp; New York, NY 10036 &nbsp;·&nbsp; 718-614-1013</div>
+    </div>
+
+    <hr class="inv-divider">
+    <hr class="inv-divider-thin">
+
+    <div class="inv-title-row">
+      <div class="inv-title">Invoice</div>
+      <div class="inv-date-right">Date &nbsp;<span id="inv-date">—</span></div>
+    </div>
+
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th style="width:68px">Memo #</th>
+          <th style="width:38px">Qty</th>
+          <th style="width:62px">CTS</th>
+          <th class="desc">Description</th>
+          <th style="width:88px">Price / Carat</th>
+          <th style="width:100px; text-align:right">Total Price</th>
+        </tr>
+      </thead>
+      <tbody id="inv-rows"></tbody>
+      <tfoot>
+        <tr class="inv-total-row">
+          <td colspan="5" style="text-align:right; letter-spacing:0.08em; text-transform:uppercase; font-size:0.72rem;">Grand Total</td>
+          <td class="price" id="inv-grand-total">$0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="inv-footer">
+      <div class="inv-footer-rule">
+        <span class="inv-footer-ornament">✦ &nbsp; ✦ &nbsp; ✦</span>
+      </div>
+      <div class="inv-footer-text">
+        Noah Diamond Inc. &nbsp;·&nbsp; 50 West 47th Street, Suite 1101, New York, NY 10036 &nbsp;·&nbsp; 718-614-1013
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const MAX_ROWS = 10;
+
+  (function buildRows() {
+    const tbody = document.getElementById('line-items');
+    for (let i = 0; i < MAX_ROWS; i++) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" placeholder="e.g. 1084" class="f-memo"></td>
+        <td><input type="number" min="0" placeholder="" class="f-qty"></td>
+        <td><input type="number" min="0" step="0.001" placeholder="0.000" class="f-cts"></td>
+        <td class="desc-col"><input type="text" placeholder="Description" class="f-desc"></td>
+        <td><input type="number" min="0" step="0.01" placeholder="0.00" class="f-ppc"></td>
+        <td class="total-col"><input type="number" min="0" step="0.01" placeholder="auto" class="f-total"></td>
+      `;
+      tbody.appendChild(tr);
+
+      const ctsInput = tr.querySelector('.f-cts');
+      const ppcInput = tr.querySelector('.f-ppc');
+      const totInput = tr.querySelector('.f-total');
+
+      totInput.addEventListener('focus', () => { totInput.dataset.manual = 'false'; });
+      totInput.addEventListener('input', () => {
+        totInput.dataset.manual = 'true';
+        totInput.classList.add('manual-override');
+      });
+
+      function recalc() {
+        if (totInput.dataset.manual === 'true') return;
+        const cts = parseFloat(ctsInput.value) || 0;
+        const ppc = parseFloat(ppcInput.value) || 0;
+        if (cts > 0 && ppc > 0) {
+          totInput.value = (cts * ppc).toFixed(2);
+          totInput.classList.remove('manual-override');
+        } else {
+          totInput.value = '';
+          totInput.classList.remove('manual-override');
+        }
+      }
+
+      ctsInput.addEventListener('input', () => {
+        totInput.dataset.manual = 'false';
+        totInput.classList.remove('manual-override');
+        recalc();
+      });
+      ppcInput.addEventListener('input', () => {
+        totInput.dataset.manual = 'false';
+        totInput.classList.remove('manual-override');
+        recalc();
+      });
+    }
+  })();
+
+  function toggleDate() {
+    const mode = document.getElementById('date-mode').value;
+    document.getElementById('manual-date').style.display = mode === 'manual' ? '' : 'none';
+  }
+
+  function getDateString() {
+    const mode = document.getElementById('date-mode').value;
+    const d = mode === 'manual' && document.getElementById('manual-date').value
+      ? new Date(document.getElementById('manual-date').value + 'T12:00:00')
+      : new Date();
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function buildAddressHTML() {
+    const addr1   = document.getElementById('cust-addr1').value.trim();
+    const addr2   = document.getElementById('cust-addr2').value.trim();
+    const city    = document.getElementById('cust-city').value.trim();
+    const state   = document.getElementById('cust-state').value.trim();
+    const zip     = document.getElementById('cust-zip').value.trim();
+    const country = document.getElementById('cust-country').value.trim();
+    const lines = [];
+    if (addr1) lines.push(addr1);
+    if (addr2) lines.push(addr2);
+    const cityLine = [city, state].filter(Boolean).join(', ') + (zip ? ' ' + zip : '');
+    if (cityLine.trim()) lines.push(cityLine.trim());
+    if (country) lines.push(country);
+    return lines.join('<br>');
+  }
+
+  function generateInvoice() {
+    const name = document.getElementById('cust-name').value.trim();
+    const trs = document.querySelectorAll('#line-items tr');
+    const items = [];
+
+    trs.forEach(tr => {
+      const memo  = tr.querySelector('.f-memo').value.trim();
+      const qty   = tr.querySelector('.f-qty').value.trim();
+      const cts   = tr.querySelector('.f-cts').value.trim();
+      const desc  = tr.querySelector('.f-desc').value.trim();
+      const ppc   = tr.querySelector('.f-ppc').value.trim();
+      const total = parseFloat(tr.querySelector('.f-total').value) || 0;
+      if (memo || qty || cts || desc) items.push({ memo, qty, cts, desc, ppc, total });
+    });
+
+    if (items.length === 0) { alert('Please add at least one line item.'); return; }
+
+    document.getElementById('inv-date').textContent       = getDateString();
+    document.getElementById('inv-cust-name').textContent  = name || '—';
+    document.getElementById('inv-cust-address').innerHTML = buildAddressHTML();
+
+    const tbody = document.getElementById('inv-rows');
+    tbody.innerHTML = '';
+    let grand = 0;
+    let prevMemo = null;
+
+    items.forEach(item => {
+      grand += item.total;
+      const isNewGroup = item.memo !== prevMemo;
+      const tr = document.createElement('tr');
+      if (isNewGroup && prevMemo !== null) tr.classList.add('memo-group-start');
+
+      tr.innerHTML = `
+        <td class="memo-cell">${isNewGroup ? (item.memo || '—') : ''}</td>
+        <td>${item.qty || '—'}</td>
+        <td>${item.cts ? parseFloat(item.cts).toFixed(3) : '—'}</td>
+        <td class="desc">${item.desc || '—'}</td>
+        <td>${item.ppc ? '$' + parseFloat(item.ppc).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>
+        <td class="price">${item.total > 0 ? '$' + item.total.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>
+      `;
+      tbody.appendChild(tr);
+      prevMemo = item.memo;
+    });
+
+    document.getElementById('inv-grand-total').textContent =
+      '$' + grand.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    document.getElementById('invoice').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function clearForm() {
+    if (!confirm('Clear all form data?')) return;
+    ['cust-name','cust-addr1','cust-addr2','cust-city','cust-state',
+     'cust-zip','cust-country','cust-contact'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('date-mode').value = 'today';
+    document.getElementById('manual-date').value = '';
+    toggleDate();
+    document.querySelectorAll('#line-items input').forEach(inp => inp.value = '');
+  }
+
+  function printInvoice() { window.print(); }
+</script>
+</body>
+</html>
