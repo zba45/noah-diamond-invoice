@@ -66,7 +66,6 @@
   .form-section-label:first-of-type { margin-top: 0; }
 
   .form-grid { display: grid; gap: 14px 20px; margin-bottom: 6px; }
-  .fg-3 { grid-template-columns: 1fr 1fr 1fr; }
   .fg-2 { grid-template-columns: 1fr 1fr; }
   .fg-4 { grid-template-columns: 2fr 2fr 1fr 1fr; }
 
@@ -99,7 +98,7 @@
   .date-row select { width: 110px; flex-shrink: 0; }
   .date-row input { flex: 1; }
 
-  /* ── LINE ITEMS TABLE (form) ── */
+  /* ── LINE ITEMS TABLE ── */
   .items-hint {
     font-size: 0.66rem;
     color: var(--ink-lite);
@@ -170,15 +169,7 @@
   .btn-print:hover { background: var(--parchment); }
 
   /* ══════════════════════════════════════════
-     INVOICE — printable
-     Layout designed for #10 envelope (4.125" × 9.5")
-     Paper folded in thirds (each ~3.67")
-     Envelope window typically: left ~0.875", top ~0.5" from fold
-     Customer address block positioned so it sits in window
-     when letter is folded: bottom fold goes up first,
-     then top fold comes down over it.
-     Address should appear in the TOP THIRD of the page,
-     roughly 2"–3" from top, left-aligned around 1" from left edge.
+     INVOICE
   ══════════════════════════════════════════ */
   #invoice {
     width: 100%;
@@ -188,23 +179,15 @@
     position: relative;
   }
 
-  /* ── TOP ZONE: return address left, customer address right-of-center ──
-     This is the top ~3.67" (top third) of the page.
-     The customer address block is positioned so it lands
-     in the envelope window (approx 3.5"–5.5" from left,
-     1.75"–2.75" from top of page).                         */
   .inv-top-zone {
     padding: 30px 52px 20px 52px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    min-height: 200px;   /* enough vertical room so invoice box never bleeds into window zone */
+    min-height: 200px;
   }
 
-  /* Return / sender address — top left corner */
-  .inv-return {
-    flex: 0 0 auto;
-  }
+  .inv-return { flex: 0 0 auto; }
   .inv-return-name {
     font-family: 'IM Fell English', serif;
     font-size: 0.82rem;
@@ -219,7 +202,6 @@
     line-height: 1.7;
   }
 
-  /* Customer address — positioned to show through window */
   .inv-address-window {
     flex: 0 0 240px;
     padding-top: 6px;
@@ -244,16 +226,14 @@
     margin-top: 3px;
   }
 
-  /* fold guide — screen only */
   .fold-guide {
     width: 100%;
     border-top: 1px dashed #c0b5a5;
     position: relative;
     margin: 0;
-    display: block;
   }
   .fold-guide::after {
-    content: '✂  fold';
+    content: '✂  fold here';
     font-size: 0.58rem;
     color: #c0b5a5;
     position: absolute;
@@ -263,7 +243,6 @@
     font-family: Georgia, serif;
   }
 
-  /* ── MAIN INVOICE BODY (middle & bottom thirds) ── */
   .inv-body {
     padding: 0 52px 48px 52px;
     position: relative;
@@ -312,7 +291,6 @@
   .inv-divider      { border: none; border-top: 2px solid var(--ink); margin: 12px 0 3px; }
   .inv-divider-thin { border: none; border-top: 0.5px solid var(--rule); margin: 3px 0 14px; }
 
-  /* Invoice title + date on same row */
   .inv-title-row {
     display: flex;
     justify-content: space-between;
@@ -334,7 +312,6 @@
   }
   .inv-date-right span { font-weight: 700; color: var(--ink); font-style: normal; }
 
-  /* ── Invoice table ── */
   .inv-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
   .inv-table thead tr { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
   .inv-table th {
@@ -367,29 +344,45 @@
   .inv-footer-text { font-size: 0.67rem; color: var(--ink-lite); font-style: italic; line-height: 1.8; }
 
   /* ══════════════════════════════════════════
-     PRINT
+     PRINT STYLES
   ══════════════════════════════════════════ */
   @page {
-    size: portrait;
-    margin: 0.5in;
-    /* Hides URL, date, page number printed by browser */
+    size: letter portrait;
+    margin: 0.4in 0.5in;
   }
+
   @media print {
-    /* Chrome/Edge: hide header/footer via -webkit hack */
-    head, header, footer { display: none !important; }
-  }
-    body { background: white; padding: 0; display: block; }
-    #form-panel { display: none !important; }
-    #invoice { box-shadow: none; max-width: 100%; }
-    .inv-top-zone { padding: 0.3in 0.6in 0.15in 0.6in; min-height: 1.5in; }
-    .inv-body { padding: 0 0.6in 0.5in 0.6in; }
-    .fold-guide { display: none !important; }
+    body {
+      background: white;
+      padding: 0;
+      display: block;
+    }
+    #form-panel {
+      display: none !important;
+    }
+    #invoice {
+      box-shadow: none;
+      max-width: 100%;
+      width: 100%;
+    }
+    .inv-top-zone {
+      padding: 0.2in 0.5in 0 0.5in;
+      min-height: 3.4in;
+      max-height: 3.4in;
+      overflow: hidden;
+    }
+    .inv-body {
+      padding: 0 0.5in 0.5in 0.5in;
+    }
+    .fold-guide {
+      display: none !important;
+    }
   }
 
   @media (max-width: 660px) {
     #form-panel { padding: 20px 16px; }
-    .fg-3, .fg-4 { grid-template-columns: 1fr 1fr; }
     .fg-2 { grid-template-columns: 1fr; }
+    .fg-4 { grid-template-columns: 1fr 1fr; }
     .inv-top-zone { flex-direction: column; gap: 18px; padding: 24px 24px 0; }
     .inv-address-window { flex: unset; width: 100%; }
     .inv-body { padding: 0 24px 36px; }
@@ -398,13 +391,10 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     ENTRY FORM
-══════════════════════════════════════════ -->
+<!-- ENTRY FORM -->
 <div id="form-panel">
   <h2>Invoice Entry — Noah Diamond Inc.</h2>
 
-  <!-- Invoice details -->
   <div class="form-section-label">Invoice Details</div>
   <div class="form-grid fg-2">
     <div class="form-group">
@@ -423,7 +413,6 @@
     </div>
   </div>
 
-  <!-- Customer address -->
   <div class="form-section-label">Customer Address (appears in envelope window)</div>
   <div class="form-grid fg-2">
     <div class="form-group">
@@ -460,9 +449,8 @@
     </div>
   </div>
 
-  <!-- Line items -->
   <div class="form-section-label">Line Items</div>
-  <div class="items-hint">Total Price auto-calculates as CTS × Price Per Carat. Rows with the same Memo # will be grouped on the invoice.</div>
+  <div class="items-hint">Total Price auto-calculates as CTS × Price Per Carat. Click into the Total field to enter manually instead. Rows with the same Memo # are grouped together.</div>
 
   <table class="items-table">
     <thead>
@@ -483,21 +471,16 @@
     <button class="btn-clear" onclick="clearForm()">Clear Form</button>
     <button class="btn-print" onclick="printInvoice()">🖨 Print &amp; Save as PDF</button>
   </div>
-  <div style="margin-top:12px; font-size:0.67rem; color:#6b5a45; font-style:italic; line-height:1.7;">
-    <strong style="font-style:normal;">To save as PDF:</strong> Click the button above → in the print dialog, set <em>Destination</em> to <em>"Save as PDF"</em> → click Save.<br>
-    <strong style="font-style:normal;">To hide the URL &amp; timestamp:</strong> In the print dialog → More settings → uncheck <em>"Headers and footers"</em>.
+  <div style="margin-top:12px; font-size:0.67rem; color:#6b5a45; font-style:italic; line-height:1.8;">
+    <strong style="font-style:normal;">To save as PDF:</strong> Click Print above → set <em>Destination</em> to <em>"Save as PDF"</em> → Save.<br>
+    <strong style="font-style:normal;">To hide the URL &amp; date when printing:</strong> In the print dialog → More settings → uncheck <em>"Headers and footers"</em>.
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     INVOICE
-══════════════════════════════════════════ -->
+<!-- INVOICE -->
 <div id="invoice">
 
-  <!-- TOP THIRD: return address + customer address window -->
   <div class="inv-top-zone">
-
-    <!-- Sender / return address (top left) -->
     <div class="inv-return">
       <div class="inv-return-name">Noah Diamond Inc.</div>
       <div class="inv-return-detail">
@@ -506,22 +489,16 @@
         718-614-1013
       </div>
     </div>
-
-    <!-- Customer address — shows through #10 envelope window -->
     <div class="inv-address-window">
       <div class="inv-address-label">To</div>
       <div class="inv-address-name" id="inv-cust-name">—</div>
       <div class="inv-address-lines" id="inv-cust-address"></div>
     </div>
-
   </div>
 
-  <!-- Fold guide (screen only) -->
   <div class="fold-guide"></div>
 
-  <!-- MIDDLE + BOTTOM THIRDS: invoice body -->
   <div class="inv-body">
-
     <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
 
     <div class="inv-header">
@@ -565,66 +542,63 @@
         Noah Diamond Inc. &nbsp;·&nbsp; 50 West 47th Street, Suite 1101, New York, NY 10036 &nbsp;·&nbsp; 718-614-1013
       </div>
     </div>
+  </div>
 
-  </div><!-- /inv-body -->
-
-</div><!-- /invoice -->
+</div>
 
 <script>
   const MAX_ROWS = 10;
 
-  // ── Build form rows ──
   (function buildRows() {
     const tbody = document.getElementById('line-items');
     for (let i = 0; i < MAX_ROWS; i++) {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><input type="text"   placeholder="e.g. 1084" class="f-memo"></td>
-        <td><input type="number" min="0" placeholder=""  class="f-qty"></td>
+        <td><input type="text" placeholder="e.g. 1084" class="f-memo"></td>
+        <td><input type="number" min="0" placeholder="" class="f-qty"></td>
         <td><input type="number" min="0" step="0.001" placeholder="0.000" class="f-cts"></td>
         <td class="desc-col"><input type="text" placeholder="Description" class="f-desc"></td>
-        <td><input type="number" min="0" step="0.01"  placeholder="0.00"  class="f-ppc"></td>
+        <td><input type="number" min="0" step="0.01" placeholder="0.00" class="f-ppc"></td>
         <td class="total-col"><input type="number" min="0" step="0.01" placeholder="auto" class="f-total"></td>
       `;
       tbody.appendChild(tr);
 
-      // Auto-calc: CTS × Price Per Carat — manual entry overrides
       const ctsInput = tr.querySelector('.f-cts');
       const ppcInput = tr.querySelector('.f-ppc');
       const totInput = tr.querySelector('.f-total');
 
-      // When user types directly in total → mark as manual override
       totInput.addEventListener('focus', () => { totInput.dataset.manual = 'false'; });
       totInput.addEventListener('input', () => {
         totInput.dataset.manual = 'true';
         totInput.classList.add('manual-override');
-        totInput.dataset.raw = parseFloat(totInput.value) || 0;
       });
 
       function recalc() {
-        // If user has manually typed a total, don't overwrite it
         if (totInput.dataset.manual === 'true') return;
         const cts = parseFloat(ctsInput.value) || 0;
         const ppc = parseFloat(ppcInput.value) || 0;
-        const total = cts * ppc;
         if (cts > 0 && ppc > 0) {
-          totInput.value = total.toFixed(2);
-          totInput.dataset.raw = total;
+          totInput.value = (cts * ppc).toFixed(2);
           totInput.classList.remove('manual-override');
         } else {
           totInput.value = '';
-          totInput.dataset.raw = 0;
           totInput.classList.remove('manual-override');
         }
       }
 
-      // When CTS or PPC change, reset manual flag and recalc
-      ctsInput.addEventListener('input', () => { totInput.dataset.manual = 'false'; totInput.classList.remove('manual-override'); recalc(); });
-      ppcInput.addEventListener('input', () => { totInput.dataset.manual = 'false'; totInput.classList.remove('manual-override'); recalc(); });
+      ctsInput.addEventListener('input', () => {
+        totInput.dataset.manual = 'false';
+        totInput.classList.remove('manual-override');
+        recalc();
+      });
+      ppcInput.addEventListener('input', () => {
+        totInput.dataset.manual = 'false';
+        totInput.classList.remove('manual-override');
+        recalc();
+      });
     }
   })();
 
-  // ── Date toggle ──
   function toggleDate() {
     const mode = document.getElementById('date-mode').value;
     document.getElementById('manual-date').style.display = mode === 'manual' ? '' : 'none';
@@ -632,60 +606,52 @@
 
   function getDateString() {
     const mode = document.getElementById('date-mode').value;
-    let d = mode === 'manual' && document.getElementById('manual-date').value
+    const d = mode === 'manual' && document.getElementById('manual-date').value
       ? new Date(document.getElementById('manual-date').value + 'T12:00:00')
       : new Date();
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
-  // ── Build address string for invoice window ──
   function buildAddressHTML() {
-    const addr1    = document.getElementById('cust-addr1').value.trim();
-    const addr2    = document.getElementById('cust-addr2').value.trim();
-    const city     = document.getElementById('cust-city').value.trim();
-    const state    = document.getElementById('cust-state').value.trim();
-    const zip      = document.getElementById('cust-zip').value.trim();
-    const country  = document.getElementById('cust-country').value.trim();
-
+    const addr1   = document.getElementById('cust-addr1').value.trim();
+    const addr2   = document.getElementById('cust-addr2').value.trim();
+    const city    = document.getElementById('cust-city').value.trim();
+    const state   = document.getElementById('cust-state').value.trim();
+    const zip     = document.getElementById('cust-zip').value.trim();
+    const country = document.getElementById('cust-country').value.trim();
     const lines = [];
-    if (addr1)  lines.push(addr1);
-    if (addr2)  lines.push(addr2);
-
+    if (addr1) lines.push(addr1);
+    if (addr2) lines.push(addr2);
     const cityLine = [city, state].filter(Boolean).join(', ') + (zip ? ' ' + zip : '');
     if (cityLine.trim()) lines.push(cityLine.trim());
     if (country) lines.push(country);
-
     return lines.join('<br>');
   }
 
-  // ── Generate Invoice ──
   function generateInvoice() {
     const name = document.getElementById('cust-name').value.trim();
-
-    // Collect rows
     const trs = document.querySelectorAll('#line-items tr');
     const items = [];
+
     trs.forEach(tr => {
       const memo  = tr.querySelector('.f-memo').value.trim();
       const qty   = tr.querySelector('.f-qty').value.trim();
       const cts   = tr.querySelector('.f-cts').value.trim();
       const desc  = tr.querySelector('.f-desc').value.trim();
       const ppc   = tr.querySelector('.f-ppc').value.trim();
-      const raw   = parseFloat(tr.querySelector('.f-total').value) || 0;
-      if (memo || qty || cts || desc) items.push({ memo, qty, cts, desc, ppc, total: raw });
+      const total = parseFloat(tr.querySelector('.f-total').value) || 0;
+      if (memo || qty || cts || desc) items.push({ memo, qty, cts, desc, ppc, total });
     });
 
     if (items.length === 0) { alert('Please add at least one line item.'); return; }
 
-    // ── Populate header ──
-    document.getElementById('inv-date').textContent      = getDateString();
-    document.getElementById('inv-cust-name').textContent = name || '—';
+    document.getElementById('inv-date').textContent       = getDateString();
+    document.getElementById('inv-cust-name').textContent  = name || '—';
     document.getElementById('inv-cust-address').innerHTML = buildAddressHTML();
 
-    // ── Populate rows ──
     const tbody = document.getElementById('inv-rows');
     tbody.innerHTML = '';
-    let grand    = 0;
+    let grand = 0;
     let prevMemo = null;
 
     items.forEach(item => {
@@ -694,22 +660,13 @@
       const tr = document.createElement('tr');
       if (isNewGroup && prevMemo !== null) tr.classList.add('memo-group-start');
 
-      const memoDisplay  = isNewGroup ? (item.memo || '—') : '';
-      const totalDisplay = item.total > 0
-        ? '$' + item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '—';
-      const ppcDisplay = item.ppc
-        ? '$' + parseFloat(item.ppc).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '—';
-      const ctsDisplay = item.cts ? parseFloat(item.cts).toFixed(3) : '—';
-
       tr.innerHTML = `
-        <td class="memo-cell">${memoDisplay}</td>
+        <td class="memo-cell">${isNewGroup ? (item.memo || '—') : ''}</td>
         <td>${item.qty || '—'}</td>
-        <td>${ctsDisplay}</td>
+        <td>${item.cts ? parseFloat(item.cts).toFixed(3) : '—'}</td>
         <td class="desc">${item.desc || '—'}</td>
-        <td>${ppcDisplay}</td>
-        <td class="price">${totalDisplay}</td>
+        <td>${item.ppc ? '$' + parseFloat(item.ppc).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>
+        <td class="price">${item.total > 0 ? '$' + item.total.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>
       `;
       tbody.appendChild(tr);
       prevMemo = item.memo;
@@ -721,7 +678,6 @@
     document.getElementById('invoice').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // ── Clear Form ──
   function clearForm() {
     if (!confirm('Clear all form data?')) return;
     ['cust-name','cust-addr1','cust-addr2','cust-city','cust-state',
@@ -731,17 +687,10 @@
     document.getElementById('date-mode').value = 'today';
     document.getElementById('manual-date').value = '';
     toggleDate();
-    document.querySelectorAll('#line-items input').forEach(inp => {
-      inp.value = '';
-      if (inp.dataset) inp.dataset.raw = 0;
-    });
+    document.querySelectorAll('#line-items input').forEach(inp => inp.value = '');
   }
 
-  // ── Print ──
-  function printInvoice() {
-    // Small tip shown before dialog opens
-    window.print();
-  }
+  function printInvoice() { window.print(); }
 </script>
 </body>
 </html>
