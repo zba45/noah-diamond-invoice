@@ -179,39 +179,44 @@
     position: relative;
   }
 
+  /* Top zone: stacked left column
+     Return address sits top-left (small),
+     customer address sits below it — lands in
+     the #10 envelope window (left side, ~2" from top). */
   .inv-top-zone {
-    padding: 30px 52px 20px 52px;
+    padding: 24px 52px 20px 52px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
-    min-height: 200px;
+    min-height: 220px;
   }
 
-  .inv-return { flex: 0 0 auto; }
+  .inv-return { margin-bottom: 28px; }
   .inv-return-name {
     font-family: 'IM Fell English', serif;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: var(--accent);
     letter-spacing: 0.03em;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
   .inv-return-detail {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--ink-lite);
     font-style: italic;
-    line-height: 1.7;
+    line-height: 1.65;
   }
 
+  /* Customer address — left-aligned, shows through left window */
   .inv-address-window {
-    flex: 0 0 240px;
-    padding-top: 6px;
+    width: 280px;
+    padding-left: 4px;
   }
   .inv-address-label {
-    font-size: 0.56rem;
+    font-size: 0.54rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--ink-lite);
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
   .inv-address-name {
     font-family: 'IM Fell English', serif;
@@ -370,7 +375,17 @@
       min-height: 3.4in;
       max-height: 3.4in;
       overflow: hidden;
+      flex-direction: column;
+      align-items: flex-start;
     }
+    /* Return address sits at very top left */
+    .inv-return { margin-bottom: 0.35in; }
+    /* Customer address block lines up with envelope window:
+       window is ~0.875" from left, ~2" from top of envelope.
+       With letter folded in thirds, this maps to roughly
+       0.2in top padding + 0.35in return block = ~0.55in from top of zone,
+       which when folded sits perfectly in the left window. */
+    .inv-address-window { padding-left: 0; width: 3in; }
     .inv-body {
       padding: 0 0.5in 0.5in 0.5in;
     }
@@ -383,8 +398,8 @@
     #form-panel { padding: 20px 16px; }
     .fg-2 { grid-template-columns: 1fr; }
     .fg-4 { grid-template-columns: 1fr 1fr; }
-    .inv-top-zone { flex-direction: column; gap: 18px; padding: 24px 24px 0; }
-    .inv-address-window { flex: unset; width: 100%; }
+    .inv-top-zone { padding: 20px 20px 0; }
+    .inv-address-window { width: 100%; }
     .inv-body { padding: 0 24px 36px; }
   }
 </style>
