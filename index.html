@@ -29,9 +29,6 @@
     align-items: center;
   }
 
-  /* ══════════════════════════════════════════
-     FORM PANEL
-  ══════════════════════════════════════════ */
   #form-panel {
     width: 100%;
     max-width: 840px;
@@ -98,7 +95,6 @@
   .date-row select { width: 110px; flex-shrink: 0; }
   .date-row input { flex: 1; }
 
-  /* ── LINE ITEMS TABLE ── */
   .items-hint {
     font-size: 0.66rem;
     color: var(--ink-lite);
@@ -147,7 +143,6 @@
   }
   .items-table tr:nth-child(even) td input { background: var(--parchment); }
 
-  /* ── BUTTONS ── */
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
   button {
@@ -168,9 +163,6 @@
   .btn-print { background: transparent; color: var(--ink-mid); border-color: var(--rule); }
   .btn-print:hover { background: var(--parchment); }
 
-  /* ══════════════════════════════════════════
-     INVOICE
-  ══════════════════════════════════════════ */
   #invoice {
     width: 100%;
     max-width: 840px;
@@ -179,44 +171,45 @@
     position: relative;
   }
 
-  /* Top zone: stacked left column
-     Return address sits top-left (small),
-     customer address sits below it — lands in
-     the #10 envelope window (left side, ~2" from top). */
+  .inv-letterhead {
+    background: var(--accent);
+    padding: 18px 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .inv-letterhead-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.6rem;
+    color: #f0e6cc;
+    letter-spacing: 0.06em;
+    font-weight: normal;
+    line-height: 1;
+  }
+  .inv-letterhead-detail {
+    text-align: right;
+    font-size: 0.68rem;
+    color: #c4a882;
+    font-style: italic;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+  }
+
   .inv-top-zone {
-    padding: 24px 52px 20px 52px;
+    padding: 28px 52px 20px 52px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-height: 220px;
+    min-height: 175px;
   }
 
-  .inv-return { margin-bottom: 28px; }
-  .inv-return-name {
-    font-family: 'IM Fell English', serif;
-    font-size: 0.78rem;
-    color: var(--accent);
-    letter-spacing: 0.03em;
-    margin-bottom: 1px;
-  }
-  .inv-return-detail {
-    font-size: 0.62rem;
-    color: var(--ink-lite);
-    font-style: italic;
-    line-height: 1.65;
-  }
-
-  /* Customer address — left-aligned, shows through left window */
-  .inv-address-window {
-    width: 280px;
-    padding-left: 4px;
-  }
+  .inv-address-window { width: 280px; padding-left: 2px; }
   .inv-address-label {
     font-size: 0.54rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--ink-lite);
-    margin-bottom: 4px;
+    margin-bottom: 5px;
   }
   .inv-address-name {
     font-family: 'IM Fell English', serif;
@@ -276,23 +269,6 @@
     line-height: 1;
   }
 
-  .inv-header { text-align: center; margin-bottom: 6px; }
-  .inv-business-name {
-    font-family: 'IM Fell English', serif;
-    font-size: 1.9rem;
-    font-weight: normal;
-    color: var(--accent);
-    letter-spacing: 0.06em;
-    line-height: 1.1;
-  }
-  .inv-sub {
-    font-size: 0.7rem;
-    color: var(--ink-lite);
-    margin-top: 4px;
-    letter-spacing: 0.1em;
-    font-style: italic;
-  }
-
   .inv-divider      { border: none; border-top: 2px solid var(--ink); margin: 12px 0 3px; }
   .inv-divider-thin { border: none; border-top: 0.5px solid var(--rule); margin: 3px 0 14px; }
 
@@ -309,12 +285,7 @@
     letter-spacing: 0.1em;
     font-style: italic;
   }
-  .inv-date-right {
-    font-size: 0.76rem;
-    color: var(--ink-mid);
-    font-style: italic;
-    letter-spacing: 0.03em;
-  }
+  .inv-date-right { font-size: 0.76rem; color: var(--ink-mid); font-style: italic; letter-spacing: 0.03em; }
   .inv-date-right span { font-weight: 700; color: var(--ink); font-style: normal; }
 
   .inv-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
@@ -348,56 +319,32 @@
   .inv-footer-ornament { font-size: 0.67rem; letter-spacing: 0.28em; color: var(--rule); }
   .inv-footer-text { font-size: 0.67rem; color: var(--ink-lite); font-style: italic; line-height: 1.8; }
 
-  /* ══════════════════════════════════════════
-     PRINT STYLES
-  ══════════════════════════════════════════ */
-  @page {
-    size: letter portrait;
-    margin: 0.4in 0.5in;
-  }
+  @page { size: letter portrait; margin: 0.4in 0.5in; }
 
   @media print {
-    body {
-      background: white;
-      padding: 0;
-      display: block;
-    }
-    #form-panel {
-      display: none !important;
-    }
-    #invoice {
-      box-shadow: none;
-      max-width: 100%;
-      width: 100%;
-    }
+    body { background: white; padding: 0; display: block; }
+    #form-panel { display: none !important; }
+    #invoice { box-shadow: none; max-width: 100%; width: 100%; }
+    .inv-letterhead { padding: 0.18in 0.5in; }
     .inv-top-zone {
-      padding: 0.2in 0.5in 0 0.5in;
-      min-height: 3.4in;
-      max-height: 3.4in;
+      padding: 0.25in 0.5in 0 0.5in;
+      min-height: 2.8in;
+      max-height: 2.8in;
       overflow: hidden;
       flex-direction: column;
       align-items: flex-start;
     }
-    /* Return address sits at very top left */
-    .inv-return { margin-bottom: 0.35in; }
-    /* Customer address block lines up with envelope window:
-       window is ~0.875" from left, ~2" from top of envelope.
-       With letter folded in thirds, this maps to roughly
-       0.2in top padding + 0.35in return block = ~0.55in from top of zone,
-       which when folded sits perfectly in the left window. */
-    .inv-address-window { padding-left: 0; width: 3in; }
-    .inv-body {
-      padding: 0 0.5in 0.5in 0.5in;
-    }
-    .fold-guide {
-      display: none !important;
-    }
+    .inv-address-window { width: 3in; }
+    .inv-body { padding: 0 0.5in 0.5in 0.5in; }
+    .fold-guide { display: none !important; }
   }
 
   @media (max-width: 660px) {
     #form-panel { padding: 20px 16px; }
     .fg-2 { grid-template-columns: 1fr; }
     .fg-4 { grid-template-columns: 1fr 1fr; }
+    .inv-letterhead { padding: 14px 20px; flex-direction: column; gap: 6px; text-align: center; }
+    .inv-letterhead-detail { text-align: center; }
     .inv-top-zone { padding: 20px 20px 0; }
     .inv-address-window { width: 100%; }
     .inv-body { padding: 0 24px 36px; }
@@ -406,7 +353,6 @@
 </head>
 <body>
 
-<!-- ENTRY FORM -->
 <div id="form-panel">
   <h2>Invoice Entry — Noah Diamond Inc.</h2>
 
@@ -492,18 +438,17 @@
   </div>
 </div>
 
-<!-- INVOICE -->
 <div id="invoice">
 
-  <div class="inv-top-zone">
-    <div class="inv-return">
-      <div class="inv-return-name">Noah Diamond Inc.</div>
-      <div class="inv-return-detail">
-        50 West 47th Street, Suite 1101<br>
-        New York, NY 10036<br>
-        718-614-1013
-      </div>
+  <div class="inv-letterhead">
+    <div class="inv-letterhead-name">Noah Diamond Inc.</div>
+    <div class="inv-letterhead-detail">
+      50 West 47th Street, Suite 1101 &nbsp;·&nbsp; New York, NY 10036<br>
+      718-614-1013
     </div>
+  </div>
+
+  <div class="inv-top-zone">
     <div class="inv-address-window">
       <div class="inv-address-label">To</div>
       <div class="inv-address-name" id="inv-cust-name">—</div>
@@ -515,12 +460,6 @@
 
   <div class="inv-body">
     <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
-
-    <div class="inv-header">
-      <div class="inv-business-name">Noah Diamond Inc.</div>
-      <div class="inv-sub">50 West 47th Street, Suite 1101 &nbsp;·&nbsp; New York, NY 10036 &nbsp;·&nbsp; 718-614-1013</div>
-    </div>
-
     <hr class="inv-divider">
     <hr class="inv-divider-thin">
 
@@ -601,16 +540,8 @@
         }
       }
 
-      ctsInput.addEventListener('input', () => {
-        totInput.dataset.manual = 'false';
-        totInput.classList.remove('manual-override');
-        recalc();
-      });
-      ppcInput.addEventListener('input', () => {
-        totInput.dataset.manual = 'false';
-        totInput.classList.remove('manual-override');
-        recalc();
-      });
+      ctsInput.addEventListener('input', () => { totInput.dataset.manual = 'false'; totInput.classList.remove('manual-override'); recalc(); });
+      ppcInput.addEventListener('input', () => { totInput.dataset.manual = 'false'; totInput.classList.remove('manual-override'); recalc(); });
     }
   })();
 
@@ -674,7 +605,6 @@
       const isNewGroup = item.memo !== prevMemo;
       const tr = document.createElement('tr');
       if (isNewGroup && prevMemo !== null) tr.classList.add('memo-group-start');
-
       tr.innerHTML = `
         <td class="memo-cell">${isNewGroup ? (item.memo || '—') : ''}</td>
         <td>${item.qty || '—'}</td>
